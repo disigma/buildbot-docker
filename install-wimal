@@ -1,0 +1,35 @@
+#!/bin/bash
+
+WIMAL_URL="https://github.com/wimal-build/wimal"
+RELEASE_CONTENT=$(curl -sL ${WIMAL_URL}/releases/latest)
+if [[ "${RELEASE_CONTENT}" =~ .*/download/([^/]+)/(wimal-linux-[^\"]+.tar.xz).* ]]; then
+  WIMAL_VERSION=${BASH_REMATCH[1]}
+  WIMAL_ARCHIVE=${BASH_REMATCH[2]}
+  echo WIMAL_VERSION: ${WIMAL_VERSION}
+  echo WIMAL_ARCHIVE: ${WIMAL_ARCHIVE}
+else
+  echo "Could not find wimal version" >&2
+  exit 1
+fi
+
+if [[ "${RELEASE_CONTENT}" =~ .*/download/${WIMAL_VERSION}/(wimal-sysroot-[^\"]+.tar.xz).* ]]; then
+  WIMAL_SYSROOT=${BASH_REMATCH[1]}
+  echo WIMAL_SYSROOT: ${WIMAL_SYSROOT}
+else
+  echo "Could not find wimal sysroot" >&2
+  exit 2
+fi
+
+curl -sL ${WIMAL_URL}/releases/download/${WIMAL_VERSION}/${WIMAL_ARCHIVE} | tar Jxv -C /
+if [[ $? -ne 0 ]]; then
+  echo "Could not extract wimal archive" >&2
+  exit 3
+fi
+
+curl -sL ${WIMAL_URL}/releases/download/${WIMAL_VERSION}/${WIMAL_SYSROOT} | tar Jxv -C /wimal/
+if [[ $? -ne 0 ]]; then
+  echo "Could not extract wimal sysroot" >&2
+  exit 4
+fi
+
+/wimal/bin/wimal install
