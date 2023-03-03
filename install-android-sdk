@@ -1,0 +1,13 @@
+#!/bin/bash
+REPOSITORY_URL="https://dl.google.com/android/repository"
+CMDLINE_TOOL_URL="$REPOSITORY_URL/commandlinetools-linux-9477386_latest.zip"
+CMDLINE_TOOL="/tmp/commandlinetools.zip"
+
+cd /home/code &&
+  curl -L "$CMDLINE_TOOL_URL" --output "$CMDLINE_TOOL" &&
+  unzip "$CMDLINE_TOOL" &&
+  rm -f "$CMDLINE_TOOL" &&
+  mkdir -p android/cmdline-tools &&
+  mv cmdline-tools -T android/cmdline-tools/latest &&
+  echo "export ANDROID_SDK_ROOT=/home/code/android" >>/home/code/.bashrc &&
+  yes | android/cmdline-tools/latest/bin/sdkmanager --licenses

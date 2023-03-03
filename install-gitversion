@@ -1,0 +1,10 @@
+#!/bin/bash
+
+REPO_URL="https://github.com/GitTools/GitVersion"
+GITVERSION_VERSION="5.12.0"
+GITVERSION_FILE="gitversion-linux-x64-5.12.0.tar.gz"
+DOWNLOAD_URL="$REPO_URL/releases/download/$GITVERSION_VERSION/$GITVERSION_FILE"
+
+curl -sL "$DOWNLOAD_URL" --output - | tar zxv gitversion &&
+  mv gitversion /usr/local/bin/gitversion &&
+  chmod a+rx /usr/local/bin/gitversion

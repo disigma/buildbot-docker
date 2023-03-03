@@ -1,6 +1,7 @@
 #!/bin/bash
 
-WIMAL_URL="https://github.com/wimal-build/wimal"
+WIMAL_URL="https://api.github.com/repos/wimal-build/wimal"
+RELEASE_URL="https://github.com/wimal-build/wimal/releases"
 RELEASE_CONTENT=$(curl -sL ${WIMAL_URL}/releases/latest)
 if [[ "${RELEASE_CONTENT}" =~ .*/download/([^/]+)/(wimal-linux-[^\"]+.tar.xz).* ]]; then
   WIMAL_VERSION=${BASH_REMATCH[1]}
@@ -20,13 +21,13 @@ else
   exit 2
 fi
 
-curl -sL ${WIMAL_URL}/releases/download/${WIMAL_VERSION}/${WIMAL_ARCHIVE} | tar Jxv -C /
+curl -sL ${RELEASE_URL}/download/${WIMAL_VERSION}/${WIMAL_ARCHIVE} | tar Jxv -C /
 if [[ $? -ne 0 ]]; then
   echo "Could not extract wimal archive" >&2
   exit 3
 fi
 
-curl -sL ${WIMAL_URL}/releases/download/${WIMAL_VERSION}/${WIMAL_SYSROOT} | tar Jxv -C /wimal/
+curl -sL ${RELEASE_URL}/download/${WIMAL_VERSION}/${WIMAL_SYSROOT} | tar Jxv -C /wimal/
 if [[ $? -ne 0 ]]; then
   echo "Could not extract wimal sysroot" >&2
   exit 4
